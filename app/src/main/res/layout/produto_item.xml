@@ -91,8 +91,6 @@
                 app:layout_constraintStart_toEndOf="@+id/textView3"
                 app:layout_constraintTop_toBottomOf="@+id/txtPrecoProduto" />
 
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,10 +110,6 @@
                 android:onClick="addCart"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     </LinearLayout>
-
-
 
 </androidx.cardview.widget.CardView>

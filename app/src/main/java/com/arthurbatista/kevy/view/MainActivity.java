@@ -2,11 +2,11 @@ package com.arthurbatista.kevy.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +17,7 @@ import com.arthurbatista.kevy.viewmodel.ProdutoViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_PRODUTO_REQUEST = 1;
 
-    public List<Produto> carrinho = new ArrayList<>();
+    public List<Produto> carrinho = new ArrayList<Produto>();
+
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.recycleView);
+        recyclerView = findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
@@ -74,10 +77,14 @@ public class MainActivity extends AppCompatActivity {
                         "Ver Carrinho",
                         view -> {
                             Log.i("Carrinho", "onClick: Carrinho" + carrinho.toString());
-                            //TODO: Criar fragment/activity para listar o carrinho
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.placeHolderCarrinho, new CarrinhoFragment());
-                            fragmentTransaction.commit();
+
+                            /*Intent intent = new Intent(MainActivity.this, CarrinhoActivity.class);
+                            List<Produto> carrinhoP = new ArrayList<Produto>();
+                            carrinhoP = carrinho;
+                            intent.putExtra(CarrinhoActivity.CARRINHO, (Serializable) carrinhoP);
+                            startActivity(intent);*/
+
+                            //TODO: passar uma lista com os ids
 
                         }
                 ).show();
