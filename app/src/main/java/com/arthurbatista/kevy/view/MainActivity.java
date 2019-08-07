@@ -74,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG
                 ).setAction(
                         "Ver Carrinho",
-                        view -> Log.i("Carrinho", "onClick: Carrinho" + carrinho.toString())
+                        view -> {
+                            Log.i("Carrinho", "onClick: Carrinho" + carrinho.toString());
+                            //TODO: Criar fragment/activity para listar o carrinho
+                            int x = 0;
+                        }
                 ).show();
 
             }
