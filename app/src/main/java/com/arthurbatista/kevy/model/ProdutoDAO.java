@@ -23,5 +23,4 @@ public interface ProdutoDAO {
 
     @Query("SELECT * FROM produto_table")
     LiveData<List<Produto>> getAllProdutos();
-
 }

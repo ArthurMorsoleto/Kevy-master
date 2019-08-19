@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     public static final int ADD_PRODUTO_REQUEST = 1;
+    private static final String TAG = "MAIN";
 
     public List<Produto> carrinho = new ArrayList<Produto>();
 
@@ -76,19 +80,15 @@ public class MainActivity extends AppCompatActivity {
                 ).setAction(
                         "Ver Carrinho",
                         view -> {
-                            Log.i("Carrinho", "onClick: Carrinho" + carrinho.toString());
-
-                            /*Intent intent = new Intent(MainActivity.this, CarrinhoActivity.class);
-                            List<Produto> carrinhoP = new ArrayList<Produto>();
-                            carrinhoP = carrinho;
-                            intent.putExtra(CarrinhoActivity.CARRINHO, (Serializable) carrinhoP);
-                            startActivity(intent);*/
-
-                            //TODO: passar uma lista com os ids
-
+                            List<Integer> produtosId = new ArrayList<>();
+                            for (Produto pdt : carrinho) {
+                                produtosId.add(pdt.getId());
+                            }
+                            Intent intent = new Intent(MainActivity.this, CarrinhoActivity.class);
+                            intent.putExtra(CarrinhoActivity.CARRINHO, (Serializable) produtosId);
+                            startActivity(intent);
                         }
                 ).show();
-
             }
         });
     }
