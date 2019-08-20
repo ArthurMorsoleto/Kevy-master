@@ -65,4 +65,8 @@ public class Produto implements Serializable {
         return imagemProduto;
     }
 
+    public void setQuantidadeProduto(int qnt){
+        this.quantidadeProduto = qnt;
+    }
+
 }
