@@ -10,6 +10,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +28,7 @@ import com.arthurbatista.kevy.viewmodel.ProdutoViewModel;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -49,6 +53,7 @@ public class AddProdutoActivity extends AppCompatActivity {
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
 
     public static final String EXTRA_PRODUTO = "com.arthurbatista.kevy.EXTRA_PRODUTO";
+    private String TAG = "ADD_PRODUTO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,9 @@ public class AddProdutoActivity extends AppCompatActivity {
         nbmQuantidade.setMinValue(1);
         nbmQuantidade.setMaxValue(100);
         nbmQuantidade.setValue(1);
+
+        Locale mLocale = new Locale("pt", "BR");
+        edtPreco.addTextChangedListener(new MoneyTextWatcher(edtPreco, mLocale));
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         setTitle("Adicionar Produto");
@@ -186,13 +194,11 @@ public class AddProdutoActivity extends AppCompatActivity {
             edtNome.requestFocus();
             Toast.makeText(this, "Insira o nome do produto", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (precoProduto.isEmpty()) {
+        } else if (precoProduto.isEmpty()) {
             edtPreco.requestFocus();
             Toast.makeText(this, "Insira o preço do produto", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (photoProduto.length < 0) {
+        } else if (photoProduto.length <= 6950) {
             imgViewProduto.requestFocus();
             Toast.makeText(this, "É necessário inserir uma imagem", Toast.LENGTH_SHORT).show();
             return;
@@ -206,12 +212,17 @@ public class AddProdutoActivity extends AppCompatActivity {
                 photoProduto
         ));
 
+        Log.i(TAG, "salvarProduto: " + produto.getNomeProduto().toString());
+        Log.i(TAG, "salvarProduto: " + produto.getPrecoProduto().toString());
+        Log.i(TAG, "salvarProduto: " + produto.getQuantidadeProduto());
+        Log.i(TAG, "salvarProduto: " + produto.getDescricaoProduto().toString());
+        Log.i(TAG, "salvarProduto: " + photoProduto.length);
+
         if (isUpdateOrDelete) {
             produto.setId(produtoToUpdateOrDelete);
             produtoViewModel.update(produto);
             Toast.makeText(this, "Produto Atualizado com Sucesso", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             produtoViewModel.insert(produto);
             Toast.makeText(this, "Produto Salvo com Sucesso", Toast.LENGTH_SHORT).show();
         }
@@ -234,8 +245,7 @@ public class AddProdutoActivity extends AppCompatActivity {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
-            else {
+            } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }

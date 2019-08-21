@@ -4,22 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.arthurbatista.kevy.R;
 import com.arthurbatista.kevy.model.Produto;
-import com.arthurbatista.kevy.viewmodel.ProdutoViewModel;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO: MANEIRA DE COMPARTILHAR/SALVAR O CARRINHO
 
 public class CarrinhoActivity extends AppCompatActivity {
 
@@ -29,11 +27,12 @@ public class CarrinhoActivity extends AppCompatActivity {
 
     public static final String TAG = "CARRINHO";
 
-    public static int precoTotal = 0;
-
-    public static int precoCarrinho = 0;
+    public static float precoCarrinho = 0;
 
     private TextView txtPrecoTotal;
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###.00#");
+    private String precoFormatado = decimalFormat.format(precoCarrinho);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +51,10 @@ public class CarrinhoActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(CARRINHO)) {
-
-            //TODO: Arrumar o preço do carrinho
-
             carrinhoAdapter.setProdutos(carrinho);
-
-            for (Produto pdt : carrinho
-                 ) {
-                precoTotal = precoTotal + Integer.valueOf(pdt.getPrecoProduto());
-            }
-            txtPrecoTotal.setText(String.valueOf(precoTotal));
+            Log.i(TAG, "Preco init " + precoCarrinho);
+            precoFormatado = "R$ " + decimalFormat.format(precoCarrinho);
+            txtPrecoTotal.setText(precoFormatado);
         }
 
         carrinhoAdapter.setOnItemClickListener(new CarrinhoAdapter.OnItemClickListener() {
@@ -73,8 +66,12 @@ public class CarrinhoActivity extends AppCompatActivity {
 
                 carrinho.get(index).setQuantidadeProduto(quantidadeAtual);
 
-                precoTotal = precoTotal + Integer.valueOf(carrinho.get(index).getPrecoProduto());
-                txtPrecoTotal.setText(String.valueOf(precoTotal));
+                precoCarrinho = precoCarrinho + Float.valueOf(carrinho.get(index).getPrecoProduto().substring(2).replace(',', '.'));
+                precoFormatado = "R$ " + decimalFormat.format(precoCarrinho);
+
+                txtPrecoTotal.setText(precoFormatado);
+
+                Log.i(TAG, "Preco depois de adicionar " + precoCarrinho);
             }
 
             @Override
@@ -91,11 +88,15 @@ public class CarrinhoActivity extends AppCompatActivity {
                         carrinho.remove(index);
                         carrinhoAdapter.setProdutos(carrinho);
 
-                        precoTotal = precoTotal - Integer.valueOf(pdtNoCarrinho.getPrecoProduto());
-                        txtPrecoTotal.setText(String.valueOf(precoTotal));
+                        precoCarrinho = precoCarrinho - Float.valueOf(pdtNoCarrinho.getPrecoProduto().substring(2).replace(',', '.'));
+                        precoFormatado = "R$ " + decimalFormat.format(precoCarrinho);
+
+                        txtPrecoTotal.setText(precoFormatado);
+
+                        Log.i(TAG, "Preco depois de remover " + precoCarrinho);
 
                         if (carrinho.size() == 0) {
-                            precoTotal = 0;
+                            precoCarrinho = 0;
                             finish();
                         }
                     });
@@ -107,8 +108,13 @@ public class CarrinhoActivity extends AppCompatActivity {
                 } else {
                     int quantidadeAtual = pdtNoCarrinho.getQuantidadeProduto() - 1;
                     pdtNoCarrinho.setQuantidadeProduto(quantidadeAtual);
-                    precoTotal = precoTotal - Integer.valueOf(pdtNoCarrinho.getPrecoProduto());
-                    txtPrecoTotal.setText(String.valueOf(precoTotal));
+                    precoCarrinho = precoCarrinho - Float.valueOf(pdtNoCarrinho.getPrecoProduto().substring(2).replace(',', '.'));
+
+                    precoFormatado = "R$ " + decimalFormat.format(precoCarrinho);
+
+                    txtPrecoTotal.setText(precoFormatado);
+
+                    Log.i(TAG, "Preco depois de remover " + precoCarrinho);
                 }
             }
         });

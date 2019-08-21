@@ -65,10 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 int isInCarrinho = CarrinhoActivity.carrinho.indexOf(produto);
                 if (isInCarrinho == -1) {
                     produto.setQuantidadeProduto(1);
-
                     CarrinhoActivity.carrinho.add(produto);
-                    //TODO: Arrumar o preço do carrinho
-                    CarrinhoActivity.precoCarrinho = CarrinhoActivity.precoCarrinho + Integer.valueOf(produto.getPrecoProduto());
+
+                    float valorProduto = Float.parseFloat((produto.getPrecoProduto().substring(2).replace(',', '.')));
+
+                    CarrinhoActivity.precoCarrinho = CarrinhoActivity.precoCarrinho + valorProduto;
                     Log.i(TAG, "onCartClick: " + CarrinhoActivity.precoCarrinho);
                 }
 
